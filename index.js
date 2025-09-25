@@ -7,7 +7,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/tours", (req, res) => {
-  res.send("Danh sách tours");
+  res.send("Danh sách tour");
 });
 
 app.listen(port, () => {
