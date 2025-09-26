@@ -1,5 +1,3 @@
-const Tour = require("../../models/tour.model");
-
 module.exports.list = async (req, res) => {
   res.render("client/pages/tour-list", {
     pageTitle: "Danh sách tour",
