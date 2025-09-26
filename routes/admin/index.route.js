@@ -1,6 +1,9 @@
 const router = require("express").Router();
-const accountRotes = require("./account.route");
+const accountRoutes = require("./account.route");
+const dashboardRoutes = require("./dashboard.route");
 
-router.use("/account", accountRotes);
+router.use("/account", accountRoutes);
+
+router.use("/dashboard", dashboardRoutes);
 
 module.exports = router;
