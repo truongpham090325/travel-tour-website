@@ -21,3 +21,9 @@ module.exports.otpPassword = async (req, res) => {
     pageTitle: "Nhập mã OTP",
   });
 };
+
+module.exports.resetPassword = async (req, res) => {
+  res.render("admin/pages/reset-password", {
+    pageTitle: " Đổi mật khẩu",
+  });
+};
