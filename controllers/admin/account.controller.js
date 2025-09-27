@@ -10,6 +10,14 @@ module.exports.register = async (req, res) => {
   });
 };
 
+module.exports.registerPost = async (req, res) => {
+  console.log(req.body);
+  res.json({
+    code: "success",
+    message: "Đăng ký tài khoản thành công!",
+  });
+};
+
 module.exports.forgotPassword = async (req, res) => {
   res.render("admin/pages/forgot-password", {
     pageTitle: "Quên mật khẩu",
