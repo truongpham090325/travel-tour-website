@@ -632,3 +632,23 @@ if (sider) {
   });
 }
 // End sider
+
+// Logout
+const buttonLogout = document.querySelector(".sider .inner-logout");
+if (buttonLogout) {
+  buttonLogout.addEventListener("click", () => {
+    fetch(`/${pathAdmin}/account/logout`, {
+      method: "POST",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.code == "error") {
+          notify.error(data.message);
+        } else {
+          drawNotify(data.code, data.message);
+          window.location.href = `/${pathAdmin}/account/login`;
+        }
+      });
+  });
+}
+// End logout

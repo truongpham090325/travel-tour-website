@@ -1,6 +1,5 @@
 const AccountAdmin = require("../../models/account-admin.model");
 const bcrypt = require("bcryptjs");
-const { response } = require("express");
 const jwt = require("jsonwebtoken");
 
 module.exports.login = async (req, res) => {
@@ -102,6 +101,15 @@ module.exports.registerPost = async (req, res) => {
 module.exports.registerInitial = async (req, res) => {
   res.render("admin/pages/register-initial", {
     pageTitle: "Tài khoản đã được khởi tạo",
+  });
+};
+
+module.exports.logoutPost = async (req, res) => {
+  res.clearCookie("token");
+
+  res.json({
+    code: "success",
+    message: "Đã đăng xuất",
   });
 };
 
