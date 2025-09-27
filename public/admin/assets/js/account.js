@@ -137,7 +137,7 @@ if (registerForm) {
         .then((res) => res.json())
         .then((data) => {
           if (data.code == "error") {
-            notyf.error(data.message);
+            notify.error(data.message);
           } else {
             drawNotify(data.code, data.message);
             window.location.href = `/${pathAdmin}/account/register-initial`;

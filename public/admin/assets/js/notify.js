@@ -1,6 +1,6 @@
 // Notify
-var notyf = new Notyf({
-  duration: 2000,
+var notify = new Notyf({
+  duration: 3000,
   position: {
     x: "right",
     y: "top",
@@ -12,9 +12,10 @@ let existNotify = sessionStorage.getItem("notify");
 if (existNotify) {
   existNotify = JSON.parse(existNotify);
   if (existNotify.code == "error") {
-    notyf.error(existNotify.message);
-  } else {
-    notyf.success(existNotify.message);
+    notify.error(existNotify.message);
+  }
+  if (existNotify.code == "success") {
+    notify.success(existNotify.message);
   }
   sessionStorage.removeItem("notify");
 }
@@ -23,9 +24,9 @@ const drawNotify = (code, message) => {
   sessionStorage.setItem(
     "notify",
     JSON.stringify({
-      code: data.code,
-      message: data.message,
+      code: code,
+      message: message,
     })
   );
 };
-// End notify
+// End Notify
