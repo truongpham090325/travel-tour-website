@@ -137,8 +137,9 @@ if (registerForm) {
         .then((res) => res.json())
         .then((data) => {
           if (data.code == "error") {
-            alert(data.message);
+            notyf.error(data.message);
           } else {
+            drawNotify(data.code, data.message);
             window.location.href = `/${pathAdmin}/account/register-initial`;
           }
         });
