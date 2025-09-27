@@ -19,35 +19,33 @@ if (loginForm) {
         rule: "required",
         errorMessage: "Vui lòng nhập mật khẩu!",
       },
-      {
-        validator: (value) => value.length >= 8,
-        errorMessage: "Mật khẩu phải chứa ít nhất 8 ký tự!",
-      },
-      {
-        validator: (value) => /[A-Z]/.test(value),
-        errorMessage: "Mật khẩu phải chứa ít nhất một chữ cái in hoa!",
-      },
-      {
-        validator: (value) => /[a-z]/.test(value),
-        errorMessage: "Mật khẩu phải chứa ít nhất một chữ cái thường!",
-      },
-      {
-        validator: (value) => /\d/.test(value),
-        errorMessage: "Mật khẩu phải chứa ít nhất một chữ số!",
-      },
-      {
-        validator: (value) => /[@$!%*?&]/.test(value),
-        errorMessage: "Mật khẩu phải chứa ít nhất một ký tự đặc biệt!",
-      },
     ])
     .onSuccess((event) => {
       const email = event.target.email.value;
       const password = event.target.password.value;
       const rememberPassword = event.target.rememberPassword.checked;
 
-      console.log(email);
-      console.log(password);
-      console.log(rememberPassword);
+      const dataFinal = {
+        email: email,
+        password: password,
+      };
+
+      fetch(`/${pathAdmin}/account/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            notify.error(data.message);
+          } else {
+            drawNotify(data.code, data.message);
+            window.location.href = `/${pathAdmin}/dashboard`;
+          }
+        });
     });
 }
 // End Login Form
