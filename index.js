@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 const databaseConfig = require("./config/database.config");
 const clientRoutes = require("./routes/client/index.route");
 const adminRoutes = require("./routes/admin/index.route");
@@ -23,8 +24,14 @@ app.use(express.static(path.join(__dirname, "public")));
 //Tạo biến toàn cục trong file Pug
 app.locals.pathAdmin = variableConfig.pathAdmin;
 
+//Tạo biến toàn cục trong file backend
+global.pathAdmin = variableConfig.pathAdmin;
+
 //Cho phép gửi dữ liệu lên dạng json
 app.use(express.json());
+
+//Lấy được cookie
+app.use(cookieParser());
 
 app.use("/", clientRoutes);
 
