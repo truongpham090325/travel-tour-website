@@ -1,6 +1,7 @@
 const AccountAdmin = require("../../models/account-admin.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const generateHelper = require("../../helpers/generate.helper");
 
 module.exports.login = async (req, res) => {
   res.render("admin/pages/login", {
@@ -116,6 +117,36 @@ module.exports.logoutPost = async (req, res) => {
 module.exports.forgotPassword = async (req, res) => {
   res.render("admin/pages/forgot-password", {
     pageTitle: "Quên mật khẩu",
+  });
+};
+
+module.exports.forgotPasswordPost = async (req, res) => {
+  const { email } = req.body;
+
+  //Kiểm tra email có tồn tại trong CSDL không
+  const existAccount = await AccountAdmin.findOne({
+    email: email,
+    status: "active",
+  });
+  if (!existAccount) {
+    res.json({
+      code: "error",
+      message: "Email không tồn tại trong hệ thống!",
+    });
+    return;
+  }
+
+  //Tạo mã OTP
+  const otp = generateHelper.generateRandomNumber(6);
+  console.log(otp);
+
+  // Lưu và CSDL bản ghi mới: gồm email và otp, lưu trong 5 phút
+
+  // Gửi mã OTP tự động qua email
+
+  res.json({
+    code: "error",
+    message: "Lỗi",
   });
 };
 
