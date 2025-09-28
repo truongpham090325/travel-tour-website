@@ -181,7 +181,8 @@ if (forgotPasswordForm) {
           if (data.code == "error") {
             notify.error(data.message);
           } else {
-            window.location.href = `/${pathAdmin}/account/otp-password`;
+            drawNotify(data.code, data.message);
+            window.location.href = `/${pathAdmin}/account/otp-password?email=${email}`;
           }
         });
     });
