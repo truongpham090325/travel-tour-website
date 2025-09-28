@@ -2,6 +2,8 @@ const AccountAdmin = require("../../models/account-admin.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generateHelper = require("../../helpers/generate.helper");
+const ForgotPassword = require("../../models/forgot-password.model");
+const mainHelper = require("../../helpers/mail.helper");
 
 module.exports.login = async (req, res) => {
   res.render("admin/pages/login", {
@@ -136,17 +138,37 @@ module.exports.forgotPasswordPost = async (req, res) => {
     return;
   }
 
+  //Kiểm tra email đã tồn tại trong ForgotPassword chưa
+  const existEmailInfoForgotPassword = await ForgotPassword.findOne({
+    email: email,
+  });
+  if (existEmailInfoForgotPassword) {
+    res.json({
+      code: "error",
+      message: "Vui lòng gửi lại yêu cầu trong 5 phút!",
+    });
+    return;
+  }
+
   //Tạo mã OTP
   const otp = generateHelper.generateRandomNumber(6);
-  console.log(otp);
 
   // Lưu và CSDL bản ghi mới: gồm email và otp, lưu trong 5 phút
+  const record = new ForgotPassword({
+    email: email,
+    otp: otp,
+    expireAt: Date.now() + 5 * 60 * 1000,
+  });
+  await record.save();
 
   // Gửi mã OTP tự động qua email
+  const title = "Mã OTP lấy lại mật khẩu";
+  const content = `Mã OTP của bạn là <b>${otp}</b>. Mã OTP có hiệu lực trong 5 phút, vui lòng không cung cấp cho bất kỳ ai.`;
+  mainHelper.sendEmail(email, title, content);
 
   res.json({
-    code: "error",
-    message: "Lỗi",
+    code: "success",
+    message: "Đã gửi OTP qua email",
   });
 };
 
