@@ -203,7 +203,31 @@ if (otpPasswordForm) {
     ])
     .onSuccess((event) => {
       const otp = event.target.otp.value;
-      console.log(otp);
+
+      const urlParam = new URLSearchParams(location.search);
+      const email = urlParam.get("email");
+
+      const dataFinal = {
+        email: email,
+        otp: otp,
+      };
+
+      fetch(`/${pathAdmin}/account/otp-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            notify.error(data.message);
+          } else {
+            drawNotify(data.code, data.message);
+            window.location.href = `/${pathAdmin}/account/reset-password`;
+          }
+        });
     });
 }
 // End OTP Password Form
