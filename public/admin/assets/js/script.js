@@ -164,12 +164,29 @@ if (categoryCreateForm) {
       }
       const description = tinymce.get("description").getContent();
 
-      console.log(name);
-      console.log(parent);
-      console.log(position);
-      console.log(status);
-      console.log(avatar);
-      console.log(description);
+      //Tạo FormData
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("parent", parent);
+      formData.append("position", position);
+      formData.append("status", status);
+      formData.append("avatar", avatar);
+      formData.append("description", description);
+
+      fetch(`/${pathAdmin}/category/create`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            notify.error(data.message);
+          } else {
+            notify.success(data.message);
+            // drawNotify(data.code, data.message);
+            // window.location.reload();
+          }
+        });
     });
 }
 // End Category Create Form
