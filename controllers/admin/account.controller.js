@@ -186,7 +186,7 @@ module.exports.otpPasswordPost = async (req, res) => {
     otp: otp,
   });
 
-  if (existRecord) {
+  if (!existRecord) {
     res.json({
       code: "error",
       message: "Mã OTP không chính xác!",
@@ -224,5 +224,27 @@ module.exports.otpPasswordPost = async (req, res) => {
 module.exports.resetPassword = async (req, res) => {
   res.render("admin/pages/reset-password", {
     pageTitle: " Đổi mật khẩu",
+  });
+};
+
+module.exports.resetPasswordPost = async (req, res) => {
+  const { password } = req.body;
+
+  //Mã hóa mật khẩu
+  const salt = bcrypt.genSaltSync(10);
+  const hashPassword = bcrypt.hashSync(password, salt);
+
+  await AccountAdmin.updateOne(
+    {
+      _id: req.account.id,
+    },
+    {
+      password: hashPassword,
+    }
+  );
+
+  res.json({
+    code: "success",
+    message: "Đổi mật khẩu thành công!",
   });
 };
