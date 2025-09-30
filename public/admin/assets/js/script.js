@@ -146,12 +146,12 @@ if (categoryCreateForm) {
   const validation = new JustValidate("#category-create-form");
 
   validation
-    // .addField("#name", [
-    //   {
-    //     rule: "required",
-    //     errorMessage: "Vui lòng nhập tên danh mục!",
-    //   },
-    // ])
+    .addField("#name", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập tên danh mục!",
+      },
+    ])
     .onSuccess((event) => {
       const name = event.target.name.value;
       const parent = event.target.parent.value;

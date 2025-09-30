@@ -1,9 +1,41 @@
 const Category = require("../../models/category.model");
 const categoryHelper = require("../../helpers/category.helper");
+const AccountAdmin = require("../../models/account-admin.model");
+const moment = require("moment");
 
 module.exports.list = async (req, res) => {
+  const categoryList = await Category.find({
+    deleted: false,
+  }).sort({
+    position: "desc",
+  });
+
+  for (const item of categoryList) {
+    if (item.createdBy) {
+      const infoAccount = await AccountAdmin.findOne({
+        _id: item.createdBy,
+      });
+      if (infoAccount) {
+        item.createdByFullName = infoAccount.fullName;
+      }
+    }
+
+    if (item.updatedBy) {
+      const infoAccount = await AccountAdmin.findOne({
+        _id: item.updatedBy,
+      });
+      if (infoAccount) {
+        item.updatedByFullName = infoAccount.fullName;
+      }
+    }
+
+    item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY");
+    item.updatedAtFormat = moment(item.updatedAt).format("HH:mm - DD/MM/YYYY");
+  }
+
   res.render("admin/pages/category-list", {
     pageTitle: "Quản lý danh mục",
+    categoryList: categoryList,
   });
 };
 
@@ -40,38 +72,3 @@ module.exports.createPost = async (req, res) => {
     message: "Tạo danh mục thành công!",
   });
 };
-
-// [
-//   {
-//     id: "1",
-//     name: "Danh mục 1",
-//     children: [
-//       {
-//         id: "1-1",
-//         name: "Danh mục 1 - 1"
-//       },
-//       {
-//         id: "1-2",
-//         name: "Danh mục 1 - 2"
-//       },
-//       {
-//         id: "1-3",
-//         name: "Danh mục 1 - 3"
-//       }
-//     ]
-//   },
-//   {
-//     id: "2",
-//     name: "Danh mục 2",
-//     children: [
-//       {
-//         id: "2-1",
-//         name: "Danh mục 2 - 1"
-//       },
-//       {
-//         id: "2-2",
-//         name: "Danh mục 2 - 2"
-//       }
-//     ]
-//   }
-// ]
