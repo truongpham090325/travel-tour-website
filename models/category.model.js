@@ -6,20 +6,20 @@ const schema = new mongoose.Schema(
     parent: String,
     position: Number,
     status: String,
-    avarta: String,
+    avatar: String,
     description: String,
-    createBy: String,
-    updateBy: String,
+    createdBy: String,
+    updatedBy: String,
     slug: String,
     deleted: {
       type: Boolean,
       default: false,
     },
-    deleteBy: String,
-    deleteAt: String,
+    deletedBy: String,
+    deletedAt: Date,
   },
   {
-    timestamps: true, // Tự động sinh ra trường createAt và updateAt
+    timestamps: true, // Tự động sinh ra trường createdAt và updatedAt
   }
 );
 

@@ -182,9 +182,8 @@ if (categoryCreateForm) {
           if (data.code == "error") {
             notify.error(data.message);
           } else {
-            notify.success(data.message);
-            // drawNotify(data.code, data.message);
-            // window.location.reload();
+            drawNotify(data.code, data.message);
+            window.location.reload();
           }
         });
     });

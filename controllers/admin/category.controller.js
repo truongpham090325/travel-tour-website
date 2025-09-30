@@ -13,17 +13,16 @@ module.exports.create = async (req, res) => {
 };
 
 module.exports.createPost = async (req, res) => {
-  // console.log(req.file);
-
   if (req.body.position) {
     req.body.position = parseInt(req.body.position);
   } else {
-    const totalRecord = await Category.countDocument({});
+    const totalRecord = await Category.countDocuments({});
     req.body.position = totalRecord + 1;
   }
 
   req.body.createBy = req.account.id;
   req.body.updateBy = req.account.id;
+  req.body.avatar = req.file ? req.file.path : "";
 
   const newRecord = new Category(req.body);
   await newRecord.save();
