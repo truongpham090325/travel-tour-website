@@ -72,3 +72,29 @@ module.exports.createPost = async (req, res) => {
     message: "Tạo danh mục thành công!",
   });
 };
+
+module.exports.edit = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const categoryDetail = await Category.findOne({
+      _id: id,
+      deleted: false,
+    });
+    console.log(categoryDetail);
+
+    const categoryList = await Category.find({
+      deleted: false,
+    });
+
+    const categoryTree = categoryHelper.buildCategoryTree(categoryList, "");
+
+    res.render("admin/pages/category-edit", {
+      pageTitle: "Chỉnh sửa danh mục",
+      categoryList: categoryTree,
+      categoryDetail: categoryDetail,
+    });
+  } catch {
+    res.redirect(`/${pathAdmin}/category/list`);
+  }
+};

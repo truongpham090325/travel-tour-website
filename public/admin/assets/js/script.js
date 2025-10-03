@@ -85,8 +85,23 @@ if (listFilepondImage.length > 0) {
   listFilepondImage.forEach((filepondImage) => {
     FilePond.registerPlugin(FilePondPluginImagePreview);
     FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+    let files = null;
+    const elementImageDefault = filepondImage.closest("[image-default]");
+    if (elementImageDefault) {
+      const imageDefault = elementImageDefault.getAttribute("image-default");
+      if (imageDefault) {
+        files = [
+          {
+            source: imageDefault,
+          },
+        ];
+      }
+    }
+
     filePond[filepondImage.name] = FilePond.create(filepondImage, {
       labelIdle: "+",
+      files: files,
     });
   });
 }

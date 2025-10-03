@@ -18,4 +18,6 @@ router.post(
   categoryController.createPost
 );
 
+router.get("/edit/:id", categoryController.edit);
+
 module.exports = router;
