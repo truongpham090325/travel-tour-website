@@ -60,8 +60,8 @@ module.exports.createPost = async (req, res) => {
     req.body.position = totalRecord + 1;
   }
 
-  req.body.createBy = req.account.id;
-  req.body.updateBy = req.account.id;
+  req.body.createdBy = req.account.id;
+  req.body.updatedBy = req.account.id;
   req.body.avatar = req.file ? req.file.path : "";
 
   const newRecord = new Category(req.body);
