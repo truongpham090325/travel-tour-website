@@ -19,7 +19,20 @@ module.exports.list = async (req, res) => {
   }
   // Hết Lọc theo Người tạo
 
-  // Hết lọc theo người tạo
+  // Lọc theo ngày tạo
+  const dataFilter = {};
+  if (req.query.startDate) {
+    const startDate = moment(req.query.startDate).toDate();
+    dataFilter.$gte = startDate;
+  }
+  if (req.query.endDate) {
+    const endDate = moment(req.query.endDate).toDate();
+    dataFilter.$lte = endDate;
+  }
+  if (Object.keys(dataFilter).length > 0) {
+    find.createdAt = dataFilter;
+  }
+  // Hết lọc theo ngày tạo
   const categoryList = await Category.find(find).sort({
     position: "desc",
   });
