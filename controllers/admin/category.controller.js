@@ -12,9 +12,21 @@ module.exports.list = async (req, res) => {
     find.status = req.query.status;
   }
   // Hết lọc theo trạng thái
+
+  // Lọc theo Người tạo
+  if (req.query.createdBy) {
+    find.createdBy = req.query.createdBy;
+  }
+  // Hết Lọc theo Người tạo
+
+  // Hết lọc theo người tạo
   const categoryList = await Category.find(find).sort({
     position: "desc",
   });
+
+  // Danh sách tài khoản quản trị
+  const accountAdminList = await AccountAdmin.find({});
+  // Hết danh sách tài khoản quản trị
 
   for (const item of categoryList) {
     if (item.createdBy) {
@@ -42,6 +54,7 @@ module.exports.list = async (req, res) => {
   res.render("admin/pages/category-list", {
     pageTitle: "Quản lý danh mục",
     categoryList: categoryList,
+    accountAdminList: accountAdminList,
   });
 };
 

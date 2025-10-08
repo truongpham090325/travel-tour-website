@@ -784,5 +784,27 @@ if (filterStatus) {
     filterStatus.value = valueCurrent;
   }
 }
-
 // End filter status
+
+// Filter created by
+const filterCreatedBy = document.querySelector("[filter-created-by]");
+if (filterCreatedBy) {
+  const url = new URL(window.location.href);
+
+  filterCreatedBy.addEventListener("change", () => {
+    const value = filterCreatedBy.value;
+    if (value) {
+      url.searchParams.set("createdBy", value);
+    } else {
+      url.searchParams.delete("createdBy");
+    }
+    window.location.href = url.href;
+  });
+
+  // Hiển thị lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("createdBy");
+  if (valueCurrent) {
+    filterCreatedBy.value = valueCurrent;
+  }
+}
+// End filter created by
