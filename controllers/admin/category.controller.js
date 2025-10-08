@@ -98,3 +98,39 @@ module.exports.edit = async (req, res) => {
     res.redirect(`/${pathAdmin}/category/list`);
   }
 };
+
+module.exports.editPatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (req.body.position) {
+      req.body.position = parseInt(req.body.position);
+    } else {
+      const totalRecord = await Category.countDocuments({});
+      req.body.position = totalRecord + 1;
+    }
+
+    req.body.updatedBy = req.account.id;
+    if (req.file) {
+      req.body.avatar = req.file.path;
+    } else {
+      delete req.body.avatar;
+    }
+    await Category.updateOne(
+      {
+        _id: id,
+        deleted: false,
+      },
+      req.body
+    );
+
+    res.json({
+      code: "success",
+      message: "Cập nhập danh mục thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Bản ghi không hợp lệ!",
+    });
+  }
+};

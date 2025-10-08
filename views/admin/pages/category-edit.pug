@@ -5,7 +5,10 @@ block main
   h1.box-title Chỉnh sửa danh mục
 
   .section-8
-    form#category-create-form
+    form#category-edit-form
+      .inner-group(style="display: none;")
+        label(class="inner-label" for="id") Id
+        input(type="text" id="id" name="id" value=categoryDetail.id)
       .inner-group
         label(class="inner-label" for="name") Tên danh mục
         input(type="text" id="name" name="name" value=categoryDetail.name)
