@@ -10,6 +10,8 @@ router.get("/list", tourController.list);
 
 router.get("/create", tourController.create);
 
+router.get("/edit/:id", tourController.edit);
+
 router.post(
   "/create",
   upload.single("avatar"),

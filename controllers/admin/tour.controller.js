@@ -164,6 +164,40 @@ module.exports.createPost = async (req, res) => {
   });
 };
 
+module.exports.edit = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const tourDetail = await Tour.findOne({
+      _id: id,
+      deleted: false,
+    });
+
+    if (tourDetail.departureDate) {
+      tourDetail.departureDateFormat = moment(tourDetail.departureDate).format(
+        "YYYY-MM-DD"
+      );
+    }
+
+    const categoryList = await Category.find({
+      deleted: false,
+    });
+
+    const categoryTree = categoryHelper.buildCategoryTree(categoryList, "");
+
+    const cityList = await City.find({});
+
+    res.render("admin/pages/tour-edit", {
+      pageTitle: "Chỉnh sửa tour",
+      categoryList: categoryTree,
+      tourDetail: tourDetail,
+      cityList: cityList,
+    });
+  } catch {
+    res.redirect(`/${pathAdmin}/tour/list`);
+  }
+};
+
 module.exports.trash = async (req, res) => {
   res.render("admin/pages/tour-trash", {
     pageTitle: "Thùng rác tour",
