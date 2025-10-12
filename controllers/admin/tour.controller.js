@@ -2,10 +2,103 @@ const Category = require("../../models/category.model");
 const categoryHelper = require("../../helpers/category.helper");
 const City = require("../../models/city.model");
 const Tour = require("../../models/tour.model");
+const AccountAdmin = require("../../models/account-admin.model");
+const moment = require("moment");
+const slugify = require("slugify");
 
 module.exports.list = async (req, res) => {
+  const find = {
+    deleted: false,
+  };
+  // Lọc theo trạng thái
+  if (req.query.status) {
+    find.status = req.query.status;
+  }
+  // Hết lọc theo trạng thái
+
+  // Lọc theo Người tạo
+  if (req.query.createdBy) {
+    find.createdBy = req.query.createdBy;
+  }
+  // Hết Lọc theo Người tạo
+
+  // Lọc theo ngày tạo
+  const dataFilter = {};
+  if (req.query.startDate) {
+    const startDate = moment(req.query.startDate).toDate();
+    dataFilter.$gte = startDate;
+  }
+  if (req.query.endDate) {
+    const endDate = moment(req.query.endDate).toDate();
+    dataFilter.$lte = endDate;
+  }
+  if (Object.keys(dataFilter).length > 0) {
+    find.createdAt = dataFilter;
+  }
+  // Hết lọc theo ngày tạo
+
+  // Tìm kiếm
+  if (req.query.keyword) {
+    const keyword = slugify(req.query.keyword);
+    const keywordRegex = new RegExp(keyword, "i");
+    find.slug = keywordRegex;
+  }
+  // Hết tìm kiếm
+
+  // Phân trang
+  const limitItems = 4;
+  let page = 1;
+  if (req.query.page && parseInt(req.query.page) > 0) {
+    page = parseInt(req.query.page);
+  }
+  const skip = (page - 1) * limitItems;
+  const totalRecord = await Tour.countDocuments(find);
+  const totalPage = Math.ceil(totalRecord / limitItems);
+  const pagination = {
+    skip: skip,
+    totalRecord: totalRecord,
+    totalPage: totalPage,
+  };
+  // Hết phân trang
+  const tourList = await Tour.find(find)
+    .sort({
+      position: "desc",
+    })
+    .limit(limitItems)
+    .skip(skip);
+
+  // Danh sách tài khoản quản trị
+  const accountAdminList = await AccountAdmin.find({});
+  // Hết danh sách tài khoản quản trị
+
+  for (const item of tourList) {
+    if (item.createdBy) {
+      const infoAccount = await AccountAdmin.findOne({
+        _id: item.createdBy,
+      });
+      if (infoAccount) {
+        item.createdByFullName = infoAccount.fullName;
+      }
+    }
+
+    if (item.updatedBy) {
+      const infoAccount = await AccountAdmin.findOne({
+        _id: item.updatedBy,
+      });
+      if (infoAccount) {
+        item.updatedByFullName = infoAccount.fullName;
+      }
+    }
+
+    item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY");
+    item.updatedAtFormat = moment(item.updatedAt).format("HH:mm - DD/MM/YYYY");
+  }
+
   res.render("admin/pages/tour-list", {
     pageTitle: "Quản lý tour",
+    tourList: tourList,
+    accountAdminList: accountAdminList,
+    pagination: pagination,
   });
 };
 
