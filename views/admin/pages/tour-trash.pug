@@ -68,7 +68,7 @@ block main
               td
                 .inner-buttons
                   button(class="inner-undo" button-undo data-api=`/${pathAdmin}/tour/undo/${item.id}`) <i class="fa-solid fa-rotate-left"></i>
-                  button(class="inner-delete") <i class="fa-regular fa-trash-can"></i>
+                  button(class="inner-delete" button-destroy data-api=`/${pathAdmin}/tour/destroy/${item.id}`) <i class="fa-regular fa-trash-can"></i>
   //- End Section 6
 
   //- Section 7

@@ -1111,3 +1111,39 @@ if (listButtonUndo.length > 0) {
   });
 }
 // End button undo
+
+// Button destroy
+const listButtonDestroy = document.querySelectorAll("[button-destroy]");
+if (listButtonDestroy.length > 0) {
+  listButtonDestroy.forEach((button) => {
+    button.addEventListener("click", () => {
+      Swal.fire({
+        title: "Bạn có chắc muốn xóa không?",
+        text: "Hành động này của bạn sẽ không thể khôi phục lại.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Hủy bỏ",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const dataApi = button.getAttribute("data-api");
+          fetch(dataApi, {
+            method: "DELETE",
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.code == "error") {
+                notify.error(data.message);
+              } else {
+                drawNotify(data.code, data.message);
+                window.location.reload();
+              }
+            });
+        }
+      });
+    });
+  });
+}
+// End button destroy
