@@ -304,10 +304,6 @@ module.exports.trash = async (req, res) => {
     position: "desc",
   });
 
-  // Danh sách tài khoản quản trị
-  const accountAdminList = await AccountAdmin.find({});
-  // Hết danh sách tài khoản quản trị
-
   for (const item of tourList) {
     if (item.createdBy) {
       const infoAccount = await AccountAdmin.findOne({
@@ -318,9 +314,9 @@ module.exports.trash = async (req, res) => {
       }
     }
 
-    if (item.deteledBy) {
+    if (item.deletedBy) {
       const infoAccount = await AccountAdmin.findOne({
-        _id: item.deteledBy,
+        _id: item.deletedBy,
       });
       if (infoAccount) {
         item.deletedByFullName = infoAccount.fullName;
