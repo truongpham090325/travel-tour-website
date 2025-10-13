@@ -296,8 +296,44 @@ module.exports.deletePatch = async (req, res) => {
 };
 
 module.exports.trash = async (req, res) => {
+  const find = {
+    deleted: true,
+  };
+
+  const tourList = await Tour.find(find).sort({
+    position: "desc",
+  });
+
+  // Danh sách tài khoản quản trị
+  const accountAdminList = await AccountAdmin.find({});
+  // Hết danh sách tài khoản quản trị
+
+  for (const item of tourList) {
+    if (item.createdBy) {
+      const infoAccount = await AccountAdmin.findOne({
+        _id: item.createdBy,
+      });
+      if (infoAccount) {
+        item.createdByFullName = infoAccount.fullName;
+      }
+    }
+
+    if (item.deteledBy) {
+      const infoAccount = await AccountAdmin.findOne({
+        _id: item.deteledBy,
+      });
+      if (infoAccount) {
+        item.deletedByFullName = infoAccount.fullName;
+      }
+    }
+
+    item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY");
+    item.deletedAtFormat = moment(item.deletedAt).format("HH:mm - DD/MM/YYYY");
+  }
+
   res.render("admin/pages/tour-trash", {
     pageTitle: "Thùng rác tour",
+    tourList: tourList,
   });
 };
 
