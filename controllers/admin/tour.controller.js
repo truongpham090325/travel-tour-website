@@ -300,9 +300,36 @@ module.exports.trash = async (req, res) => {
     deleted: true,
   };
 
-  const tourList = await Tour.find(find).sort({
-    position: "desc",
-  });
+  // Tìm kiếm
+  if (req.query.keyword) {
+    const keyword = slugify(req.query.keyword);
+    const keywordRegex = new RegExp(keyword, "i");
+    find.slug = keywordRegex;
+  }
+  // Hết tìm kiếm
+
+  // Phân trang
+  const limitItems = 4;
+  let page = 1;
+  if (req.query.page && parseInt(req.query.page) > 0) {
+    page = parseInt(req.query.page);
+  }
+  const skip = (page - 1) * limitItems;
+  const totalRecord = await Tour.countDocuments(find);
+  const totalPage = Math.ceil(totalRecord / limitItems);
+  const pagination = {
+    skip: skip,
+    totalRecord: totalRecord,
+    totalPage: totalPage,
+  };
+  // Hết phân trang
+
+  const tourList = await Tour.find(find)
+    .sort({
+      position: "desc",
+    })
+    .limit(limitItems)
+    .skip(skip);
 
   for (const item of tourList) {
     if (item.createdBy) {
@@ -330,6 +357,7 @@ module.exports.trash = async (req, res) => {
   res.render("admin/pages/tour-trash", {
     pageTitle: "Thùng rác tour",
     tourList: tourList,
+    pagination: pagination,
   });
 };
 
@@ -397,6 +425,20 @@ module.exports.changeMultiPatch = async (req, res) => {
           message: "Cập nhập trạng thái thành công!",
         });
         break;
+      case "undo":
+        await Tour.updateMany(
+          {
+            _id: { $in: ids },
+          },
+          {
+            deleted: false,
+          }
+        );
+        res.json({
+          code: "success",
+          message: "Khôi phục thành công!",
+        });
+        break;
       case "delete":
         await Tour.updateMany(
           {
@@ -411,6 +453,15 @@ module.exports.changeMultiPatch = async (req, res) => {
         res.json({
           code: "success",
           message: "Đã xóa thành công!",
+        });
+        break;
+      case "destroy":
+        await Tour.deleteMany({
+          _id: { $in: ids },
+        });
+        res.json({
+          code: "success",
+          message: "Đã xóa vĩnh viễn!",
         });
         break;
       default:

@@ -1031,18 +1031,54 @@ if (changeMulti) {
         ids: ids,
       };
 
-      fetch(dataApi, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataFinal),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          drawNotify(data.code, data.message);
-          window.location.reload();
+      if (option == "destroy") {
+        Swal.fire({
+          title: "Bạn có chắc muốn xóa không?",
+          text: "Hành động này của bạn sẽ không thể khôi phục lại.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Đồng ý",
+          cancelButtonText: "Hủy bỏ",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(dataApi, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(dataFinal),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.code == "error") {
+                  notify.error(data.message);
+                } else {
+                  drawNotify(data.code, data.message);
+                  window.location.reload();
+                }
+              });
+          }
         });
+      } else {
+        fetch(dataApi, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataFinal),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.code == "error") {
+              notify.error(data.message);
+            } else {
+              drawNotify(data.code, data.message);
+              window.location.reload();
+            }
+          });
+      }
     }
   });
 }
