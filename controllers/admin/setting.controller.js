@@ -1,6 +1,7 @@
 const { permissionList } = require("../../config/variable.config");
 const Role = require("../../models/role.model");
 const SettingWebsiteInfo = require("../../models/setting-website-info.model");
+const slugify = require("slugify");
 
 module.exports.list = async (req, res) => {
   res.render("admin/pages/setting-list", {
@@ -58,8 +59,25 @@ module.exports.accountAdminCreate = async (req, res) => {
 };
 
 module.exports.roleList = async (req, res) => {
+  const find = {
+    deleted: false,
+  };
+
+  // Tìm kiếm
+  if (req.query.keyword) {
+    const keyword = slugify(req.query.keyword);
+    const keywordRegex = new RegExp(keyword, "i");
+    find.slug = keywordRegex;
+  }
+  // Hết tìm kiếm
+
+  const roleList = await Role.find(find).sort({
+    createdAt: "desc",
+  });
+
   res.render("admin/pages/setting-role-list", {
     pageTitle: "Nhóm quyền",
+    roleList: roleList,
   });
 };
 
@@ -87,6 +105,34 @@ module.exports.roleCreatePost = async (req, res) => {
     res.json({
       code: "error",
       message: "Dữ liệu không hợp lệ!",
+    });
+  }
+};
+
+module.exports.changeMultiPatch = async (req, res) => {
+  try {
+    const { option, ids } = req.body;
+    switch (option) {
+      case "delete":
+        await Role.deleteMany({
+          _id: { $in: ids },
+        });
+        res.json({
+          code: "success",
+          message: "Đã xóa nhóm quyền!",
+        });
+        break;
+      default:
+        res.json({
+          code: "error",
+          message: "Hành động không hợp lệ!",
+        });
+        break;
+    }
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Bản ghi không hợp lệ!",
     });
   }
 };
