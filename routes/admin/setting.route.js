@@ -5,6 +5,7 @@ const cloudinaryHelper = require("../../helpers/clouldinary.helper");
 const upload = multer({
   storage: cloudinaryHelper.storage,
 });
+const settingValidate = require("../../validates/admin/setting.validate");
 
 router.get("/list", settingController.list);
 
@@ -26,5 +27,11 @@ router.get("/account-admin/create", settingController.accountAdminCreate);
 router.get("/role/list", settingController.roleList);
 
 router.get("/role/create", settingController.roleCreate);
+
+router.post(
+  "/role/create",
+  settingValidate.roleCreatePost,
+  settingController.roleCreatePost
+);
 
 module.exports = router;
