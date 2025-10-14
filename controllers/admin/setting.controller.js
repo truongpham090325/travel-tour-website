@@ -1,3 +1,6 @@
+const { set } = require("mongoose");
+const SettingWebsiteInfo = require("../../models/setting-website-info.model");
+
 module.exports.list = async (req, res) => {
   res.render("admin/pages/setting-list", {
     pageTitle: "Cài đặt chung",
@@ -5,8 +8,39 @@ module.exports.list = async (req, res) => {
 };
 
 module.exports.websiteInfo = async (req, res) => {
+  const settingWebsiteInfo = await SettingWebsiteInfo.findOne({});
+
   res.render("admin/pages/setting-website-info", {
     pageTitle: "Thông tin website",
+    settingWebsiteInfo: settingWebsiteInfo,
+  });
+};
+
+module.exports.websiteInfoPatch = async (req, res) => {
+  if (req.files && req.files.logo) {
+    req.body.logo = req.files.logo[0].path;
+  }
+
+  if (req.files && req.files.favicon) {
+    req.body.favicon = req.files.favicon[0].path;
+  }
+
+  const settingWebsiteInfo = await SettingWebsiteInfo.findOne({});
+  if (!settingWebsiteInfo) {
+    const newRecord = new SettingWebsiteInfo(req.body);
+    await newRecord.save();
+  } else {
+    await SettingWebsiteInfo.updateOne(
+      {
+        _id: settingWebsiteInfo.id,
+      },
+      req.body
+    );
+  }
+
+  res.json({
+    code: "success",
+    message: "Cập nhập thành công!",
   });
 };
 
