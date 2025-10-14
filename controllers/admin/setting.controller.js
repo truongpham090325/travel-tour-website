@@ -172,6 +172,26 @@ module.exports.roleEditPatch = async (req, res) => {
   }
 };
 
+module.exports.roleDeletePatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    await Role.deleteOne({
+      _id: id,
+    });
+
+    res.json({
+      code: "success",
+      message: "Đã xóa nhóm quyền!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Bản ghi không hợp lệ!",
+    });
+  }
+};
+
 module.exports.changeMultiPatch = async (req, res) => {
   try {
     const { option, ids } = req.body;
