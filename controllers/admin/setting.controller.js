@@ -4,6 +4,7 @@ const Role = require("../../models/role.model");
 const SettingWebsiteInfo = require("../../models/setting-website-info.model");
 const slugify = require("slugify");
 const bcrypt = require("bcryptjs");
+const moment = require("moment");
 
 module.exports.list = async (req, res) => {
   res.render("admin/pages/setting-list", {
@@ -49,8 +50,59 @@ module.exports.websiteInfoPatch = async (req, res) => {
 };
 
 module.exports.accountAdminList = async (req, res) => {
+  const find = {
+    deleted: false,
+  };
+  // Lọc theo trạng thái
+  if (req.query.status) {
+    find.status = req.query.status;
+  }
+  // Hết lọc theo trạng thái
+
+  // Lọc theo ngày tạo
+  const dataFilter = {};
+  if (req.query.startDate) {
+    const startDate = moment(req.query.startDate).toDate();
+    dataFilter.$gte = startDate;
+  }
+  if (req.query.endDate) {
+    const endDate = moment(req.query.endDate).toDate();
+    dataFilter.$lte = endDate;
+  }
+  if (Object.keys(dataFilter).length > 0) {
+    find.createdAt = dataFilter;
+  }
+  // Hết lọc theo ngày tạo
+
+  // Lọc theo nhóm quyền
+  if (req.query.role) {
+    find.role = req.query.role;
+  }
+  // Hết lọc theo nhóm quyền
+
+  const roleList = await Role.find({
+    deleted: false,
+  });
+
+  const accountAdminList = await AccountAdmin.find(find).sort({
+    createdAt: "desc",
+  });
+
+  for (const item of accountAdminList) {
+    if (item.role) {
+      const roleInfo = await Role.findOne({
+        _id: item.role,
+      });
+      if (roleInfo) {
+        item.roleName = roleInfo.name;
+      }
+    }
+  }
+
   res.render("admin/pages/setting-account-admin-list", {
     pageTitle: "Tài khoản quản trị",
+    accountAdminList: accountAdminList,
+    roleList: roleList,
   });
 };
 

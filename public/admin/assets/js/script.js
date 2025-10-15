@@ -1091,6 +1091,29 @@ if (filterEndDate) {
 }
 // End filter end date
 
+// Filter role
+const filterRole = document.querySelector("[filter-role]");
+if (filterRole) {
+  const url = new URL(window.location.href);
+
+  filterRole.addEventListener("change", () => {
+    const value = filterRole.value;
+    if (value) {
+      url.searchParams.set("role", value);
+    } else {
+      url.searchParams.delete("role");
+    }
+    window.location.href = url.href;
+  });
+
+  // Hiển thị lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("role");
+  if (valueCurrent) {
+    filterStatus.value = valueCurrent;
+  }
+}
+// End filter role
+
 // Fiter reset
 const filterReset = document.querySelector("[filter-reset]");
 if (filterReset) {

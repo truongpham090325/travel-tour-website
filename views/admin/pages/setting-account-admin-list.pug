@@ -9,21 +9,21 @@ block main
       .inner-item.inner-label
         <i class="fa-solid fa-filter"></i> Bộ lọc
       .inner-item
-        select
+        select(filter-status)
           option(value="") Trạng thái
-          option(value="") Hoạt động
-          option(value="") Tạm dừng
+          option(value="initial") Khởi tạo
+          option(value="active") Hoạt động
+          option(value="inactive") Tạm dừng
       .inner-item.inner-date
-        input(type="date")
+        input(type="date" filter-start-date)
         span -
-        input(type="date")
+        input(type="date" filter-end-date)
       .inner-item
-        select
+        select(filter-role)
           option(value="") Nhóm quyền
-          option(value="") Quản trị viên
-          option(value="") Quản lý tour
-          option(value="") Quản lý đơn hàng
-      .inner-item.inner-reset
+          each item in roleList
+            option(value=item.id) #{item.name}
+      .inner-item.inner-reset(filter-reset)
         <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
   //- End Section 4
 
@@ -53,7 +53,7 @@ block main
         thead
           tr
             th(class="inner-center")
-              input(type="checkbox" class="inner-check")
+              input(type="checkbox" class="inner-check" check-all)
             th Họ tên
             th(class="inner-center") Ảnh đại diện
             th Email
@@ -63,22 +63,28 @@ block main
             th Trạng thái
             th Hành động
         tbody
-          tr
-            td(class="inner-center")
-              input(type="checkbox" class="inner-check")
-            td Lê Văn A
-            td(class="inner-center")
-              img(src="/admin/assets/images/avatar.jpg" class="inner-avatar")
-            td levana@gmail.com
-            td 01234567890
-            td Quản trị viên
-            td Giám đốc
-            td
-              .badge.badge-green Hoạt động
-            td
-              .inner-buttons
-                button(class="inner-edit") <i class="fa-regular fa-pen-to-square"></i>
-                button(class="inner-delete") <i class="fa-regular fa-trash-can"></i>
+          each item in accountAdminList
+            tr
+              td(class="inner-center")
+                input(type="checkbox" class="inner-check" check-item=item.id)
+              td #{item.fullName}
+              td(class="inner-center")
+                img(src=item.avatar class="inner-avatar")
+              td #{item.email}
+              td #{item.phone}
+              td #{item.roleName}
+              td #{item.positionCompany}
+              td(class="inner-center")
+                if (item.status == "initial")
+                  .badge.badge-orange Khởi tạo
+                else if (item.status == "active")
+                  .badge.badge-green Hoạt động
+                else if (item.status == "inactive")
+                  .badge.badge-red Tạm dừng
+              td
+                .inner-buttons
+                  a(href=`/${pathAdmin}/setting/account-admin/edit/${item.id}` class="inner-edit") <i class="fa-regular fa-pen-to-square"></i>
+                  button(class="inner-delete" button-delete data-api=`/${pathAdmin}/setting/account-admin/delete/${item.id}`) <i class="fa-regular fa-trash-can"></i>
   //- End Section 6
 
   //- Section 7
