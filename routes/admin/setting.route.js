@@ -30,6 +30,11 @@ router.post(
   settingController.accountAdminCreatePost
 );
 
+router.patch(
+  "/account-admin/change-multi",
+  settingController.accountAdminChangeMulti
+);
+
 router.get("/role/list", settingController.roleList);
 
 router.get("/role/create", settingController.roleCreate);

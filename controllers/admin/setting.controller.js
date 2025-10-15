@@ -80,13 +80,40 @@ module.exports.accountAdminList = async (req, res) => {
   }
   // Hết lọc theo nhóm quyền
 
+  // Tìm kiếm
+  if (req.query.keyword) {
+    const keyword = slugify(req.query.keyword);
+    const keywordRegex = new RegExp(keyword, "i");
+    find.slug = keywordRegex;
+  }
+  // Hết tìm kiếm
+
+  // Phân trang
+  const limitItems = 4;
+  let page = 1;
+  if (req.query.page && parseInt(req.query.page) > 0) {
+    page = parseInt(req.query.page);
+  }
+  const skip = (page - 1) * limitItems;
+  const totalRecord = await AccountAdmin.countDocuments(find);
+  const totalPage = Math.ceil(totalRecord / limitItems);
+  const pagination = {
+    skip: skip,
+    totalRecord: totalRecord,
+    totalPage: totalPage,
+  };
+  // Hết phân trang
+
   const roleList = await Role.find({
     deleted: false,
   });
 
-  const accountAdminList = await AccountAdmin.find(find).sort({
-    createdAt: "desc",
-  });
+  const accountAdminList = await AccountAdmin.find(find)
+    .sort({
+      createdAt: "desc",
+    })
+    .limit(4)
+    .skip(skip);
 
   for (const item of accountAdminList) {
     if (item.role) {
@@ -103,6 +130,7 @@ module.exports.accountAdminList = async (req, res) => {
     pageTitle: "Tài khoản quản trị",
     accountAdminList: accountAdminList,
     roleList: roleList,
+    pagination: pagination,
   });
 };
 
@@ -150,6 +178,57 @@ module.exports.accountAdminCreatePost = async (req, res) => {
     res.json({
       code: "error",
       message: "Dữ liệu không hợp lệ!",
+    });
+  }
+};
+
+module.exports.accountAdminChangeMulti = async (req, res) => {
+  try {
+    const { option, ids } = req.body;
+    switch (option) {
+      case "initial":
+      case "active":
+      case "inactive":
+        await AccountAdmin.updateMany(
+          {
+            _id: { $in: ids },
+          },
+          {
+            status: option,
+          }
+        );
+        res.json({
+          code: "success",
+          message: "Cập nhập trạng thái thành công!",
+        });
+        break;
+      case "delete":
+        await AccountAdmin.updateMany(
+          {
+            _id: { $in: ids },
+          },
+          {
+            deleted: true,
+            deletedBy: req.account.id,
+            deletedAt: Date.now(),
+          }
+        );
+        res.json({
+          code: "success",
+          message: "Đã xóa thành công!",
+        });
+        break;
+      default:
+        res.json({
+          code: "error",
+          message: "Hành động không hợp lệ!",
+        });
+        break;
+    }
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Bản ghi không hợp lệ!",
     });
   }
 };
