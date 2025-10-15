@@ -30,6 +30,14 @@ router.post(
   settingController.accountAdminCreatePost
 );
 
+router.get("/account-admin/edit/:id", settingController.accountAdminEdit);
+
+router.patch(
+  "/account-admin/edit/:id",
+  upload.single("avatar"),
+  settingController.accountAdminEditPatch
+);
+
 router.patch(
   "/account-admin/change-multi",
   settingController.accountAdminChangeMulti

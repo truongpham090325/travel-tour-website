@@ -182,6 +182,98 @@ module.exports.accountAdminCreatePost = async (req, res) => {
   }
 };
 
+module.exports.accountAdminEdit = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const accountDetail = await AccountAdmin.findOne({
+      _id: id,
+      deleted: false,
+    });
+
+    if (!accountDetail) {
+      res.redirect(`/${pathAdmin}/setting/account-admin/list`);
+      return;
+    }
+
+    const roleList = await Role.find({
+      deleted: false,
+    });
+
+    res.render("admin/pages/setting-account-admin-edit", {
+      pageTitle: "Cập nhập tài khoản quản trị",
+      accountDetail: accountDetail,
+      roleList: roleList,
+    });
+  } catch {
+    res.redirect(`/${pathAdmin}/setting/account-admin/list`);
+  }
+};
+
+module.exports.accountAdminEditPatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const accountDetail = await AccountAdmin.findOne({
+      _id: id,
+      deleted: false,
+    });
+
+    if (!accountDetail) {
+      res.json({
+        code: "error",
+        message: "Bản ghi không tồn tại!",
+      });
+      return;
+    }
+
+    const existEmail = await AccountAdmin.findOne({
+      _id: { $ne: id }, // ne: not equal
+      email: req.body.email,
+    });
+
+    if (existEmail) {
+      res.json({
+        code: "error",
+        message: "Email đã tồn tại trong hệ thống!",
+      });
+      return;
+    }
+
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      req.body.password = await bcrypt.hash(req.body.password, salt);
+    } else {
+      delete req.body.password;
+    }
+
+    req.body.updatedBy = req.account.id;
+    if (req.file) {
+      req.body.avatar = req.file.path;
+    } else {
+      delete req.body.avatar;
+    }
+
+    await AccountAdmin.updateOne(
+      {
+        _id: id,
+        deleted: false,
+      },
+      req.body
+    );
+
+    res.json({
+      code: "success",
+      message: "Cập nhật tài khoản thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Dữ liệu không hợp lệ!",
+    });
+  }
+};
+
 module.exports.accountAdminChangeMulti = async (req, res) => {
   try {
     const { option, ids } = req.body;
