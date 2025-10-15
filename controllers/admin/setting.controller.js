@@ -274,6 +274,34 @@ module.exports.accountAdminEditPatch = async (req, res) => {
   }
 };
 
+module.exports.accountAdminDeletePatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    await AccountAdmin.updateOne(
+      {
+        _id: id,
+        deleted: false,
+      },
+      {
+        deleted: true,
+        deletedBy: req.account.id,
+        deletedAt: Date.now(),
+      }
+    );
+
+    res.json({
+      code: "success",
+      message: "Xóa tài khoản thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Bản ghi không hợp lệ!",
+    });
+  }
+};
+
 module.exports.accountAdminChangeMulti = async (req, res) => {
   try {
     const { option, ids } = req.body;

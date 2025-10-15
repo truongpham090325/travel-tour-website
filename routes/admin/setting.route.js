@@ -39,6 +39,11 @@ router.patch(
 );
 
 router.patch(
+  "/account-admin/delete/:id",
+  settingController.accountAdminDeletePatch
+);
+
+router.patch(
   "/account-admin/change-multi",
   settingController.accountAdminChangeMulti
 );
