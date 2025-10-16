@@ -253,6 +253,14 @@ module.exports.changeMultiPatch = async (req, res) => {
     switch (option) {
       case "active":
       case "inactive":
+        if (!req.permissions.includes("category-edit")) {
+          res.json({
+            code: "error",
+            message: "Không có quyền!",
+          });
+          return;
+        }
+
         await Category.updateMany(
           {
             _id: { $in: ids },
@@ -267,6 +275,14 @@ module.exports.changeMultiPatch = async (req, res) => {
         });
         break;
       case "delete":
+        if (!req.permissions.includes("category-delete")) {
+          res.json({
+            code: "error",
+            message: "Không có quyền!",
+          });
+          return;
+        }
+
         await Category.updateMany(
           {
             _id: { $in: ids },
