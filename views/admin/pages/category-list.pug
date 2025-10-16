@@ -34,8 +34,9 @@ block main
           .inner-item
             select
               option(value="") -- Hành động --
-              option(value="active") Hoạt động
-              option(value="inactive") Dừng hoạt động
+              if (permissions.includes("category-edit"))
+                option(value="active") Hoạt động
+                option(value="inactive") Dừng hoạt động
               if (permissions.includes("category-delete"))
                 option(value="delete") Xóa
           .inner-item
