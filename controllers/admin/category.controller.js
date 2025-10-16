@@ -114,6 +114,14 @@ module.exports.create = async (req, res) => {
 };
 
 module.exports.createPost = async (req, res) => {
+  if (!req.permissions.includes("category-create")) {
+    res.json({
+      code: "error",
+      message: "Không có quyền!",
+    });
+    return;
+  }
+
   if (req.body.position) {
     req.body.position = parseInt(req.body.position);
   } else {
@@ -161,6 +169,14 @@ module.exports.edit = async (req, res) => {
 
 module.exports.editPatch = async (req, res) => {
   try {
+    if (!req.permissions.includes("category-edit")) {
+      res.json({
+        code: "error",
+        message: "Không có quyền!",
+      });
+      return;
+    }
+
     const id = req.params.id;
     if (req.body.position) {
       req.body.position = parseInt(req.body.position);
@@ -197,6 +213,14 @@ module.exports.editPatch = async (req, res) => {
 
 module.exports.deletePatch = async (req, res) => {
   try {
+    if (!req.permissions.includes("category-delete")) {
+      res.json({
+        code: "error",
+        message: "Không có quyền!",
+      });
+      return;
+    }
+
     const id = req.params.id;
 
     await Category.updateOne(
