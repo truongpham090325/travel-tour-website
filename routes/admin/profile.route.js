@@ -5,13 +5,23 @@ const cloudinaryHelper = require("../../helpers/clouldinary.helper");
 const upload = multer({
   storage: cloudinaryHelper.storage,
 });
+const profileValidate = require("../../validates/admin/profile.validate");
 
 router.get("/edit", profileController.edit);
 
-router.patch("/edit", upload.single("avatar"), profileController.editPatch);
+router.patch(
+  "/edit",
+  profileValidate.profileEditPatch,
+  upload.single("avatar"),
+  profileController.editPatch
+);
 
 router.get("/change-password", profileController.changePassword);
 
-router.patch("/change-password", profileController.changePasswordPatch);
+router.patch(
+  "/change-password",
+  profileValidate.profileChangePassword,
+  profileController.changePasswordPatch
+);
 
 module.exports = router;
