@@ -228,30 +228,10 @@ block main
         data-aos-duration="800" 
         data-aos="fade-up"
         )
-        //- // Product Item
-        //- +product-item()
-        //- // End Product Item
-        //- // Product Item
-        //- +product-item()
-        //- // End Product Item
-        //- // Product Item
-        //- +product-item()
-        //- // End Product Item
-        //- // Product Item
-        //- +product-item()
-        //- // End Product Item
-        //- // Product Item
-        //- +product-item()
-        //- // End Product Item
-        //- // Product Item
-        //- +product-item()
-        //- // End Product Item
-        //- // Product Item
-        //- +product-item()
-        //- // End Product Item
-        //- // Product Item
-        //- +product-item()
-        //- // End Product Item
+        each item in tourListSection6
+          // Product Item
+          +product-item(item)
+          // End Product Item
       .inner-button
         a.button-outline(href="#") Xem tất cả
   // End Section 6
