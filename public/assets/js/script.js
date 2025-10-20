@@ -406,3 +406,225 @@ if (orderForm) {
   // End List Input Method
 }
 // End Order Form
+
+// Filter start date
+const filterStartDate = document.querySelector("[filter-start-date]");
+if (filterStartDate) {
+  const url = new URL(window.location.href);
+
+  filterStartDate.addEventListener("change", () => {
+    const value = filterStartDate.value;
+    if (value) {
+      url.searchParams.set("startDate", value);
+    } else {
+      url.searchParams.delete("startDate");
+    }
+    window.location.href = url.href;
+  });
+
+  // Hiển thị lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("startDate");
+  if (valueCurrent) {
+    filterStartDate.value = valueCurrent;
+  }
+}
+// End filter start date
+
+// Filter end date
+const filterEndDate = document.querySelector("[filter-end-date]");
+if (filterEndDate) {
+  const url = new URL(window.location.href);
+
+  filterEndDate.addEventListener("change", () => {
+    const value = filterEndDate.value;
+    if (value) {
+      url.searchParams.set("endDate", value);
+    } else {
+      url.searchParams.delete("endDate");
+    }
+    window.location.href = url.href;
+  });
+
+  // Hiển thị lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("endDate");
+  if (valueCurrent) {
+    filterEndDate.value = valueCurrent;
+  }
+}
+// End filter end date
+
+// Fiter reset
+const filterReset = document.querySelector("[filter-reset]");
+if (filterReset) {
+  const url = new URL(window.location.href);
+
+  filterReset.addEventListener("click", () => {
+    url.search = "";
+    window.location.href = url.href;
+  });
+}
+// End filter reset
+
+// Check all
+const checkAll = document.querySelector("[check-all]");
+if (checkAll) {
+  checkAll.addEventListener("click", () => {
+    const listCheckItem = document.querySelectorAll("[check-item]");
+    listCheckItem.forEach((item) => {
+      item.checked = checkAll.checked;
+    });
+  });
+}
+// End check all
+
+// Change multi
+const changeMulti = document.querySelector("[change-multi]");
+if (changeMulti) {
+  const dataApi = changeMulti.getAttribute("data-api");
+  const select = changeMulti.querySelector("select");
+  const button = changeMulti.querySelector("button");
+
+  button.addEventListener("click", () => {
+    const option = select.value;
+    const listInputChecked = document.querySelectorAll("[check-item]:checked");
+    if (option && listInputChecked.length > 0) {
+      const ids = [];
+      listInputChecked.forEach((input) => {
+        const id = input.getAttribute("check-item");
+        ids.push(id);
+      });
+
+      const dataFinal = {
+        option: option,
+        ids: ids,
+      };
+
+      if (option == "destroy") {
+        Swal.fire({
+          title: "Bạn có chắc muốn xóa không?",
+          text: "Hành động này của bạn sẽ không thể khôi phục lại.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Đồng ý",
+          cancelButtonText: "Hủy bỏ",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(dataApi, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(dataFinal),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.code == "error") {
+                  notify.error(data.message);
+                } else {
+                  drawNotify(data.code, data.message);
+                  window.location.reload();
+                }
+              });
+          }
+        });
+      } else {
+        fetch(dataApi, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataFinal),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.code == "error") {
+              notify.error(data.message);
+            } else {
+              drawNotify(data.code, data.message);
+              window.location.reload();
+            }
+          });
+      }
+    }
+  });
+}
+// End change multi
+
+// Search
+const search = document.querySelector("[search]");
+if (search) {
+  const url = new URL(window.location.href);
+  search.addEventListener("keyup", (event) => {
+    if (event.code == "Enter") {
+      const value = search.value;
+      if (value) {
+        url.searchParams.set("keyword", value);
+      } else {
+        url.searchParams.delete("keyword");
+      }
+      window.location.href = url.href;
+    }
+  });
+}
+// End search
+
+// Box pagination
+const boxPagination = document.querySelector("[box-pagination]");
+if (boxPagination) {
+  const url = new URL(window.location.href);
+
+  boxPagination.addEventListener("change", () => {
+    const value = boxPagination.value;
+    if (value) {
+      url.searchParams.set("page", value);
+    } else {
+      url.searchParams.delete("page");
+    }
+    window.location.href = url.href;
+  });
+
+  // Hiển thị lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("page");
+  if (valueCurrent) {
+    boxPagination.value = valueCurrent;
+  }
+}
+// End box pagination
+
+// Button destroy
+const listButtonDestroy = document.querySelectorAll("[button-destroy]");
+if (listButtonDestroy.length > 0) {
+  listButtonDestroy.forEach((button) => {
+    button.addEventListener("click", () => {
+      Swal.fire({
+        title: "Bạn có chắc muốn xóa không?",
+        text: "Hành động này của bạn sẽ không thể khôi phục lại.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Hủy bỏ",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const dataApi = button.getAttribute("data-api");
+          fetch(dataApi, {
+            method: "DELETE",
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.code == "error") {
+                notify.error(data.message);
+              } else {
+                drawNotify(data.code, data.message);
+                window.location.reload();
+              }
+            });
+        }
+      });
+    });
+  });
+}
+// End button destroy
