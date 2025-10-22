@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generateHelper = require("../../helpers/generate.helper");
 const ForgotPassword = require("../../models/forgot-password.model");
-const mainHelper = require("../../helpers/mail.helper");
+const mailHelper = require("../../helpers/mail.helper");
 
 module.exports.login = async (req, res) => {
   res.render("admin/pages/login", {
@@ -164,7 +164,7 @@ module.exports.forgotPasswordPost = async (req, res) => {
   // Gửi mã OTP tự động qua email
   const title = "Mã OTP lấy lại mật khẩu";
   const content = `Mã OTP của bạn là <b>${otp}</b>. Mã OTP có hiệu lực trong 5 phút, vui lòng không cung cấp cho bất kỳ ai.`;
-  mainHelper.sendEmail(email, title, content);
+  mailHelper.sendEmail(email, title, content);
 
   res.json({
     code: "success",
