@@ -749,3 +749,47 @@ if (boxSortTour) {
   });
 }
 // End Box sort tour
+
+// Box tour detail
+const boxTourDetail = document.querySelector(".box-tour-detail");
+if (boxTourDetail) {
+  const listInputQuantity = boxTourDetail.querySelectorAll("[input-quantity]");
+  const elementTotalPrice = document.querySelector("[totalPrice]");
+  const drawBoxTourDetail = () => {
+    let totalPrice = 0;
+    listInputQuantity.forEach((input) => {
+      let quantity = parseInt(input.value);
+      const feildName = input.getAttribute("input-quantity");
+      const price = parseInt(input.getAttribute("data-price"));
+      const min = parseInt(input.getAttribute("min"));
+      const max = parseInt(input.getAttribute("max"));
+
+      if (quantity < min) {
+        quantity = min;
+        input.value = min;
+        notify.error(`Số lượng phải >= ${min}`);
+      }
+
+      if (quantity > max) {
+        quantity = max;
+        input.value = max;
+        notify.error(`Số lượng phải <= ${max}`);
+      }
+
+      const labelQuantity = boxTourDetail.querySelector(
+        `[label-quantity="${feildName}"]`
+      );
+      labelQuantity.innerHTML = quantity;
+
+      totalPrice += quantity * price;
+    });
+    elementTotalPrice.innerHTML = totalPrice.toLocaleString("vi-VN");
+  };
+
+  listInputQuantity.forEach((input) => {
+    input.addEventListener("change", () => {
+      drawBoxTourDetail();
+    });
+  });
+}
+// End box tour detail

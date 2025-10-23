@@ -96,11 +96,11 @@ block main
                       min="0"
                       max=tourDetail.stockAdult
                       type="number"
-                      name="stockAdult"
+                      input-quantity="stockAdult"
                       data-price=tourDetail.priceNewAdult
                       )
                   .inner-item-price
-                    span(labelStockAdult) 1
+                    span(label-quantity="stockAdult") 1
                     span x
                     span.inner-highlight #{tourDetail.priceNewAdult.toLocaleString("vi-VN")}
                 .inner-item
@@ -110,11 +110,11 @@ block main
                       value="0" 
                       min="0" 
                       type="number"
-                      name="stockChildren"
+                      input-quantity="stockChildren"
                       data-price=tourDetail.priceNewChildren
                       )
                   .inner-item-price
-                    span(labelStockChildren) 0
+                    span(label-quantity="stockChildren") 0
                     span x
                     span.inner-highlight #{tourDetail.priceNewChildren.toLocaleString("vi-VN")}
                 .inner-item
@@ -124,11 +124,11 @@ block main
                       value="0" 
                       min="0" 
                       type="number"
-                      name="stockBaby"
+                      input-quantity="stockBaby"
                       data-price=tourDetail.priceNewBaby
                       )
                   .inner-item-price
-                    span(labelStockBaby) 0
+                    span(label-quantity="stockBaby") 0
                     span x
                     span.inner-highlight #{tourDetail.priceNewBaby.toLocaleString("vi-VN")}
             .inner-total
