@@ -655,9 +655,19 @@ if (boxFilter) {
     }
     window.location.href = url.href;
   });
+
+  // Hiển thị giá trị mặc định
+  const urlCurrent = new URL(window.location.href);
+  for (const item of filterList) {
+    const valueCurrent = urlCurrent.searchParams.get(item);
+    if (valueCurrent) {
+      boxFilter.querySelector(`[name="${item}"]`).value = valueCurrent;
+    }
+  }
 }
 // End Box Filter
 
+// Form search
 const formSearch = document.querySelector("[form-search]");
 if (formSearch) {
   const url = new URL(`${window.location.origin}/search`);
