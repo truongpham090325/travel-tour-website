@@ -296,16 +296,16 @@ if (emailForm) {
   const validation = new JustValidate("#email-form");
 
   validation
-    // .addField("#email-input", [
-    //   {
-    //     rule: "required",
-    //     errorMessage: "Vui lòng nhập email của bạn!",
-    //   },
-    //   {
-    //     rule: "email",
-    //     errorMessage: "Email không đúng định dạng!",
-    //   },
-    // ])
+    .addField("#email-input", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập email của bạn!",
+      },
+      {
+        rule: "email",
+        errorMessage: "Email không đúng định dạng!",
+      },
+    ])
     .onSuccess((event) => {
       const email = event.target.email.value;
 
