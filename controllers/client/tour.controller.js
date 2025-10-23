@@ -1,5 +1,6 @@
 const Category = require("../../models/category.model");
 const Tour = require("../../models/tour.model");
+const moment = require("moment");
 
 module.exports.detail = async (req, res) => {
   const slug = req.params.slug;
@@ -39,6 +40,14 @@ module.exports.detail = async (req, res) => {
     avatar: tourDetail.avatar,
   });
   // End breadcrumb
+
+  // Format dữ liệu
+  if (tourDetail.departureDate) {
+    tourDetail.departureDateFormat = moment(tourDetail.departureDate).format(
+      "DD/MM/YYYY"
+    );
+  }
+  // Hết format dữ liệu
 
   res.render("client/pages/tour-detail", {
     pageTitle: "Chi tiết tour",
