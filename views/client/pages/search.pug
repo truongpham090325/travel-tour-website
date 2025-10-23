@@ -72,10 +72,10 @@ block main
             .inner-sort
               .inner-label Sắp xếp:
               .inner-list
-                button
+                button(class="sort-price-asc")
                   | Giá tăng dần
                   i.fa-solid.fa-square-caret-up
-                button
+                button(class="sort-price-desc")
                   | Giá giảm dần
                   i.fa-solid.fa-square-caret-down
                 button.active
@@ -102,10 +102,8 @@ block main
           .box-pagination
             button
               i.fa-solid.fa-angles-left
-            button.active 1
-            button 2
-            button 3
-            button 4
+            - for(let i = 1; i <= pagination.totalPage; i++)
+                button #{i}
             button
               i.fa-solid.fa-angles-right
           // End Pagination

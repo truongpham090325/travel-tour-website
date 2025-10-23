@@ -570,29 +570,6 @@ if (search) {
 }
 // End search
 
-// Box pagination
-const boxPagination = document.querySelector("[box-pagination]");
-if (boxPagination) {
-  const url = new URL(window.location.href);
-
-  boxPagination.addEventListener("change", () => {
-    const value = boxPagination.value;
-    if (value) {
-      url.searchParams.set("page", value);
-    } else {
-      url.searchParams.delete("page");
-    }
-    window.location.href = url.href;
-  });
-
-  // Hiển thị lựa chọn mặc định
-  const valueCurrent = url.searchParams.get("page");
-  if (valueCurrent) {
-    boxPagination.value = valueCurrent;
-  }
-}
-// End box pagination
-
 // Button destroy
 const listButtonDestroy = document.querySelectorAll("[button-destroy]");
 if (listButtonDestroy.length > 0) {
@@ -710,3 +687,65 @@ if (formSearch) {
   });
 }
 // End Form Search
+
+// Box pagination
+const boxPagination = document.querySelector(".box-pagination");
+if (boxPagination) {
+  const url = new URL(window.location.href);
+  const currentPage = url.searchParams.get("page");
+
+  const listButton = boxPagination.querySelectorAll("button");
+  for (const button of listButton) {
+    const value = button.innerText.trim();
+
+    if (value === currentPage) {
+      button.classList.add("active");
+    }
+
+    button.addEventListener("click", () => {
+      if (value) {
+        url.searchParams.set("page", value);
+      } else {
+        url.searchParams.delete("page");
+      }
+      window.location.href = url.href;
+    });
+  }
+}
+// End box pagination
+
+//  Box sort Tour
+const boxSortTour = document.querySelector(".inner-sort");
+if (boxSortTour) {
+  const url = new URL(window.location.href);
+
+  const sortPriceASC = boxSortTour.querySelector(".sort-price-asc");
+  const sortPriceDESC = boxSortTour.querySelector(".sort-price-desc");
+
+  sortPriceASC.addEventListener("click", () => {
+    const priceASC = true;
+
+    if (priceASC) {
+      url.searchParams.set("priceASC", priceASC);
+      url.searchParams.delete("priceDESC");
+    } else {
+      url.searchParams.delete("priceASC");
+    }
+
+    window.location.href = url.href;
+  });
+
+  sortPriceDESC.addEventListener("click", () => {
+    const priceDESC = true;
+
+    if (priceDESC) {
+      url.searchParams.set("priceDESC", priceDESC);
+      url.searchParams.delete("priceASC");
+    } else {
+      url.searchParams.delete("priceDESC");
+    }
+
+    window.location.href = url.href;
+  });
+}
+// End Box sort tour

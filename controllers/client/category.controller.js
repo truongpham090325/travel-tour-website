@@ -48,17 +48,48 @@ module.exports.list = async (req, res) => {
   const categoryChild = await categoryHelper.getCategoryChild(categoryId);
   const categoryChildId = categoryChild.map((item) => item.id);
 
-  const tourList = await Tour.find({
+  const find = {
     category: {
       $in: [categoryId, ...categoryChildId],
     },
     deleted: false,
     status: "active",
-  })
-    .sort({
-      position: "desc",
-    })
-    .limit(8);
+  };
+
+  const sort = {};
+
+  // Phân trang
+  const limitItems = 8;
+  let page = 1;
+  if (req.query.page && parseInt(req.query.page) > 0) {
+    page = parseInt(req.query.page);
+  }
+  const skip = (page - 1) * limitItems;
+  const totalRecord = await Tour.countDocuments(find);
+  const totalPage = Math.ceil(totalRecord / limitItems);
+  const pagination = {
+    skip: skip,
+    totalRecord: totalRecord,
+    totalPage: totalPage,
+  };
+  // Hết phân trang
+
+  // Sắp xếp giá tăng
+  if (req.query.priceASC) {
+    sort.priceNewAdult = "asc";
+  }
+  // Hết sắp xếp giá tăng
+
+  // Sắp xếp giá giảm
+  if (req.query.priceDESC) {
+    sort.priceNewAdult = "desc";
+  }
+  // Hết sắp xếp giá giảm
+
+  const tourList = await Tour.find(find)
+    .sort(sort)
+    .limit(limitItems)
+    .skip(skip);
 
   for (const item of tourList) {
     item.discount = Math.floor(
@@ -84,5 +115,6 @@ module.exports.list = async (req, res) => {
     categoryDetail: categoryDetail,
     tourList: tourList,
     cityList: cityList,
+    pagination,
   });
 };
