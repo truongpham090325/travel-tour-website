@@ -76,7 +76,7 @@ block main
                 i.fa-solid.fa-truck-plane
                 span Phương Tiện:
                 span.inner-highlight #{tourDetail.vehicle}
-              .inner-item
+              .inner-item(name="locationFrom")
                 i.fa-solid.fa-calendar-days
                 span Ngày Khởi Hành:
                 span.inner-highlight #{tourDetail.departureDateFormat}
@@ -96,9 +96,11 @@ block main
                       min="0"
                       max=tourDetail.stockAdult
                       type="number"
+                      name="stockAdult"
+                      data-price=tourDetail.priceNewAdult
                       )
                   .inner-item-price
-                    span 1
+                    span(labelStockAdult) 1
                     span x
                     span.inner-highlight #{tourDetail.priceNewAdult.toLocaleString("vi-VN")}
                 .inner-item
@@ -108,9 +110,11 @@ block main
                       value="0" 
                       min="0" 
                       type="number"
+                      name="stockChildren"
+                      data-price=tourDetail.priceNewChildren
                       )
                   .inner-item-price
-                    span 0
+                    span(labelStockChildren) 0
                     span x
                     span.inner-highlight #{tourDetail.priceNewChildren.toLocaleString("vi-VN")}
                 .inner-item
@@ -120,13 +124,17 @@ block main
                       value="0" 
                       min="0" 
                       type="number"
+                      name="stockBaby"
+                      data-price=tourDetail.priceNewBaby
                       )
                   .inner-item-price
-                    span 0
+                    span(labelStockBaby) 0
                     span x
                     span.inner-highlight #{tourDetail.priceNewBaby.toLocaleString("vi-VN")}
             .inner-total
               .inner-total-label Tổng cộng:
-              .inner-total-price #{tourDetail.priceNewAdult.toLocaleString("vi-VN")} đ
-            button.inner-button-add-cart Thêm Vào Giỏ Hàng
+              .inner-total-price
+                span(totalPrice) #{tourDetail.priceNewAdult.toLocaleString("vi-VN")}
+                span đ
+            button.inner-button-add-cart(button-add-cart tour-id=tourDetail.id) Thêm Vào Giỏ Hàng
   // End Section 10
