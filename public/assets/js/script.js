@@ -851,6 +851,7 @@ if (boxTourDetail) {
         quantityAdult: quantityAdult,
         quantityChildren: quantityChildren,
         quantityBaby: quantityBaby,
+        checked: true,
       };
       const cart = JSON.parse(localStorage.getItem("cart"));
       const indexItemExist = cart.findIndex((item) => item.tourId == tourId);
@@ -889,10 +890,12 @@ const drawCart = () => {
         let htmlArray = [];
         if (data.cart.length > 0) {
           htmlArray = data.cart.map((item) => {
-            subTotal +=
-              item.priceNewAdult * item.quantityAdult +
-              item.priceNewChildren * item.quantityChildren +
-              item.priceNewBaby * item.quantityBaby;
+            if (item.checked) {
+              subTotal +=
+                item.priceNewAdult * item.quantityAdult +
+                item.priceNewChildren * item.quantityChildren +
+                item.priceNewBaby * item.quantityBaby;
+            }
             return `
             <div class="inner-tour-item">
               <div class="inner-actions">
@@ -902,7 +905,13 @@ const drawCart = () => {
                 >
                   <i class="fa-solid fa-xmark"></i>
                 </button>
-                <input class="inner-check" type="checkbox" />
+                <input 
+                  class="inner-check" 
+                  type="checkbox"
+                  ${item.checked ? "checked" : ""}
+                  input-check
+                  tour-id=${item.tourId}
+                />
               </div>
               <div class="inner-product">
                 <div class="inner-image">
@@ -1041,14 +1050,30 @@ const drawCart = () => {
         });
 
         // Sự kiện xóa tour
-        const buttonDelete = document.querySelectorAll("[button-delete]");
-        buttonDelete.forEach((button) => {
+        const listButtonDelete = document.querySelectorAll("[button-delete]");
+        listButtonDelete.forEach((button) => {
           button.addEventListener("click", () => {
             const tourId = button.getAttribute("tour-id");
             let cart = JSON.parse(localStorage.getItem("cart"));
             cart = cart.filter((item) => item.tourId != tourId);
             localStorage.setItem("cart", JSON.stringify(cart));
             drawCart();
+          });
+        });
+
+        // Sự kiện check tour
+        const listInputCheck = document.querySelectorAll("[input-check]");
+        listInputCheck.forEach((input) => {
+          input.addEventListener("change", () => {
+            const tourId = input.getAttribute("tour-id");
+            const checked = input.checked;
+            const cart = JSON.parse(localStorage.getItem("cart"));
+            const itemUpdate = cart.find((item) => item.tourId == tourId);
+            if (itemUpdate) {
+              itemUpdate["checked"] = checked;
+              localStorage.setItem("cart", JSON.stringify(cart));
+              drawCart();
+            }
           });
         });
       }
