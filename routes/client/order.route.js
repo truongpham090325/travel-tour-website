@@ -8,4 +8,6 @@ router.post(
   orderController.createPost
 );
 
+router.get("/success", orderController.success);
+
 module.exports = router;

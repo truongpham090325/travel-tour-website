@@ -69,7 +69,7 @@ module.exports.createPost = async (req, res) => {
 
     res.json({
       code: "success",
-      message: "Chúc mừng bạn đã đặt hành thành công!",
+      message: "Chúc mừng bạn đã đặt hàng thành công!",
       orderCode: req.body.code,
     });
   } catch (error) {
@@ -79,4 +79,14 @@ module.exports.createPost = async (req, res) => {
       message: "Đặt hàng không thành công!",
     });
   }
+};
+
+module.exports.success = async (req, res) => {
+  const { orderCode, phone } = req.query;
+  console.log(orderCode);
+  console.log(phone);
+
+  res.render("client/pages/order-success", {
+    pageTitle: "Đặt hàng thành công",
+  });
 };
