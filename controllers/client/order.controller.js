@@ -1,6 +1,12 @@
 const { generateRandomNumber } = require("../../helpers/generate.helper");
 const Tour = require("../../models/tour.model");
 const Order = require("../../models/order.model");
+const {
+  paymentMethodList,
+  paymentStatusList,
+  statusList,
+} = require("../../config/variable.config");
+const moment = require("moment");
 
 module.exports.createPost = async (req, res) => {
   try {
@@ -83,10 +89,49 @@ module.exports.createPost = async (req, res) => {
 
 module.exports.success = async (req, res) => {
   const { orderCode, phone } = req.query;
-  console.log(orderCode);
-  console.log(phone);
+  const orderDetail = await Order.findOne({
+    code: orderCode,
+    phone: phone,
+  });
+
+  if (!orderDetail) {
+    res.redirect("/");
+    return;
+  }
+
+  orderDetail.paymentMethodName = paymentMethodList.find(
+    (item) => item.value == orderDetail.paymentMethod
+  ).label;
+
+  orderDetail.paymentStatusName = paymentStatusList.find(
+    (item) => item.value == orderDetail.paymentStatus
+  ).label;
+
+  orderDetail.statusName = statusList.find(
+    (item) => item.value == orderDetail.status
+  ).label;
+
+  orderDetail.createdAtFormat = moment(orderDetail.createdAt).format(
+    "HH:mm - DD/MM/YYYY"
+  );
+
+  for (const item of orderDetail.items) {
+    const tourInfo = await Tour.findOne({
+      _id: item.tourId,
+    });
+    if (tourInfo) {
+      console.log(tourInfo);
+      item.avatar = tourInfo.avatar;
+      item.name = tourInfo.name;
+      item.slug = tourInfo.slug;
+      item.departureDateFormat = moment(tourInfo.departureDate).format(
+        "DD/MM/YYYY"
+      );
+    }
+  }
 
   res.render("client/pages/order-success", {
     pageTitle: "Đặt hàng thành công",
+    orderDetail: orderDetail,
   });
 };

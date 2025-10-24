@@ -9,7 +9,7 @@ module.exports.orderCreatePost = async (req, res, next) => {
       "string.empty": "Vui lòng nhập số điện thoại!",
     }),
     note: Joi.string().allow(""),
-    method: Joi.string().allow(""),
+    paymentMethod: Joi.string().allow(""),
     items: Joi.string().required().messages({
       "string.empty": "Vui lòng chọn ít nhất một tour!",
     }),
