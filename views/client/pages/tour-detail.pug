@@ -76,13 +76,13 @@ block main
                 i.fa-solid.fa-truck-plane
                 span Phương Tiện:
                 span.inner-highlight #{tourDetail.vehicle}
-              .inner-item(name="locationFrom")
+              .inner-item
                 i.fa-solid.fa-calendar-days
                 span Ngày Khởi Hành:
                 span.inner-highlight #{tourDetail.departureDateFormat}
             .inner-form
               label.inner-label Khởi Hành Tại:
-              select
+              select(name="locationFrom")
                 each item in tourDetail.locations
                   option(value=item) #{item}
             .inner-quantity
@@ -108,7 +108,8 @@ block main
                   .inner-item-input
                     input(
                       value="0" 
-                      min="0" 
+                      min="0"
+                      max=tourDetail.stockChildren 
                       type="number"
                       input-quantity="stockChildren"
                       data-price=tourDetail.priceNewChildren
@@ -122,7 +123,8 @@ block main
                   .inner-item-input
                     input(
                       value="0" 
-                      min="0" 
+                      min="0"
+                      max=tourDetail.stockBaby 
                       type="number"
                       input-quantity="stockBaby"
                       data-price=tourDetail.priceNewBaby
