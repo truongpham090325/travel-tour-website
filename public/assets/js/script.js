@@ -757,6 +757,17 @@ if (!cart) {
 }
 // End Initial Cart
 
+// Mini cart
+const drawMiniCart = () => {
+  const miniCart = document.querySelector("[mini-cart]");
+  if (miniCart) {
+    const cart = JSON.parse(localStorage.getItem("cart"));
+    miniCart.innerHTML = cart.length;
+  }
+};
+drawMiniCart();
+// End mini cart
+
 // Box Tour Detail
 const boxTourDetail = document.querySelector(".box-tour-detail");
 if (boxTourDetail) {
@@ -852,20 +863,13 @@ if (boxTourDetail) {
       // drawNotify("success", "Đã thêm tour vào giỏ hàng!");
       // window.location.href = "/cart";
       notify.success("Đã thêm tour vào giỏ hàng!");
+      drawMiniCart();
     } else {
       notify.error("Số lượng phải >= 0");
     }
   });
 }
 // End Box Tour Detail
-
-// Mini cart
-const miniCart = document.querySelector("[mini-cart]");
-if (miniCart) {
-  const cart = JSON.parse(localStorage.getItem("cart"));
-  miniCart.innerHTML = cart.length;
-}
-// End mini cart
 
 // Page cart
 const drawCart = () => {
@@ -1002,6 +1006,7 @@ const drawCart = () => {
         const elementCartTotal = document.querySelector("[cart-total]");
         elementCartSubTotal.innerHTML = subTotal.toLocaleString("vi-VN");
         elementCartTotal.innerHTML = total.toLocaleString("vi-VN");
+        drawMiniCart();
 
         // Sự kiện cập nhật số lượng
         const listInputMethod = document.querySelectorAll("[input-quantity]");
