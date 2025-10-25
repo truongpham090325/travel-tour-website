@@ -5,6 +5,9 @@ block main
 
   .section-8
     form#order-edit-form
+      .inner-group(style="display: none;")
+          label(class="inner-label" for="id") Id
+          input(type="text" id="id" name="id" value=orderDetail.id)
       .inner-group
         label(class="inner-label" for="fullName") Tên khách hàng
         input(type="text" id="fullName" name="fullName" value=orderDetail.fullName)
@@ -18,17 +21,17 @@ block main
         label(class="inner-label" for="paymentMethod") Phương thức thanh toán
         select(id="paymentMethod" name="paymentMethod")
           each item in paymentMethodList
-            option(value=item.value) #{item.label}
+            option(value=item.value selected=(item.value == orderDetail.paymentMethod)) #{item.label}
       .inner-group
         label(class="inner-label" for="paymentStatus") Trạng thái thanh toán
         select(id="paymentStatus" name="paymentStatus")
           each item in paymentStatusList
-            option(value=item.value) #{item.label}
+            option(value=item.value selected=(item.value == orderDetail.paymentStatus)) #{item.label}
       .inner-group
         label(class="inner-label" for="status") Trạng thái
         select(id="status" name="status")
           each item in statusList
-            option(value=item.value) #{item.label}
+            option(value=item.value selected=(item.value == orderDetail.status)) #{item.label}
       .inner-group
         label(class="inner-label" for="createdAt") Ngày đặt
         input(type="datetime-local" id="createdAt" name="createdAt" value=orderDetail.createdAtFormat readonly)

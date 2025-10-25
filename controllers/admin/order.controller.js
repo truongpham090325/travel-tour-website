@@ -135,3 +135,27 @@ module.exports.edit = async (req, res) => {
     res.redirect(`/${pathAdmin}/order/list`);
   }
 };
+
+module.exports.editPatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    await Order.updateOne(
+      {
+        _id: id,
+        deleted: false,
+      },
+      req.body
+    );
+
+    res.json({
+      code: "success",
+      message: "Cập nhập đơn hàng thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Dữ liệu không hợp lệ!",
+    });
+  }
+};
