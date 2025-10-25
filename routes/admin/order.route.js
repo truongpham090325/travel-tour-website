@@ -12,4 +12,5 @@ router.patch(
   orderController.editPatch
 );
 
+router.delete("/delete/:id", orderController.destroyDelete);
 module.exports = router;
