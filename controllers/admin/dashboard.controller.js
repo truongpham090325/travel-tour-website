@@ -1,5 +1,12 @@
 const AccountAdmin = require("../../models/account-admin.model");
 const Order = require("../../models/order.model");
+const Tour = require("../../models/tour.model");
+const {
+  paymentMethodList,
+  paymentStatusList,
+  statusList,
+} = require("../../config/variable.config");
+const moment = require("moment");
 
 module.exports.dashboard = async (req, res) => {
   // Thông số tổng quan
@@ -12,10 +19,46 @@ module.exports.dashboard = async (req, res) => {
   overview.totalAdmin = await AccountAdmin.countDocuments({
     deleted: false,
   });
-
-  const orderList = await Order.find({
+  // Khối đơn hàng mới
+  const find = {
     deleted: false,
-  });
+  };
+
+  const orderList = await Order.find(find)
+    .sort({
+      createdAt: "desc",
+    })
+    .limit(3);
+
+  for (const orderDetail of orderList) {
+    orderDetail.paymentMethodName = paymentMethodList.find(
+      (item) => item.value == orderDetail.paymentMethod
+    ).label;
+
+    orderDetail.paymentStatusName = paymentStatusList.find(
+      (item) => item.value == orderDetail.paymentStatus
+    ).label;
+
+    orderDetail.statusInfo = statusList.find(
+      (item) => item.value == orderDetail.status
+    );
+
+    orderDetail.createdAtTime = moment(orderDetail.createdAt).format("HH:mm");
+    orderDetail.createdAtDate = moment(orderDetail.createdAt).format(
+      "DD/MM/YYYY"
+    );
+
+    for (const item of orderDetail.items) {
+      const tourInfo = await Tour.findOne({
+        _id: item.tourId,
+      });
+      if (tourInfo) {
+        item.avatar = tourInfo.avatar;
+        item.name = tourInfo.name;
+      }
+    }
+  }
+  // Hết khối đơn hàng mới
 
   overview.totalOrder = orderList.length;
   overview.totalRevenue = orderList.reduce(
@@ -27,6 +70,9 @@ module.exports.dashboard = async (req, res) => {
   res.render("admin/pages/dashboard", {
     pageTitle: "Tổng quan",
     overview: overview,
+    orderList: orderList,
+    paymentMethodList: paymentMethodList,
+    paymentStatusList: paymentStatusList,
   });
 };
 
