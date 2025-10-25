@@ -19,16 +19,15 @@ block main
         span -
         input(type="date" filter-end-date)
       .inner-item
-        select
+        select(filter-paymentMethod)
           option(value="") Phương thức thanh toán
-          option(value="") Ví Momo
-          option(value="") VNPay
-          option(value="") ZaloPay
+          each item in paymentMethodList
+            option(value=item.value) #{item.label}
       .inner-item
-        select
+        select(filter-paymentStatus)
           option(value="") Trạng thái thanh toán
-          option(value="") Đã thanh toán
-          option(value="") Chưa thanh toán
+          each item in paymentStatusList
+            option(value=item.value) #{item.label}
       .inner-item.inner-reset(filter-reset)
         <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
   //- End Section 4

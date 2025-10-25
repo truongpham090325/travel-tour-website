@@ -4,7 +4,6 @@ const {
   paymentMethodList,
   paymentStatusList,
   statusList,
-  pathAdmin,
 } = require("../../config/variable.config");
 const moment = require("moment");
 
@@ -34,6 +33,18 @@ module.exports.list = async (req, res) => {
   }
   // Hết lọc theo ngày tạo
 
+  // Lọc theo phương thức thanh toán
+  if (req.query.paymentMethod) {
+    find.paymentMethod = req.query.paymentMethod;
+  }
+  // Hết lọc theo phương thức thanh toán
+
+  // Lọc theo trạng thái thanh toán
+  if (req.query.paymentStatus) {
+    find.paymentStatus = req.query.paymentStatus;
+  }
+  // Hết lọc theo trạng thái thanh toán
+
   // Tìm kiếm
   if (req.query.keyword) {
     find.fullName = req.query.keyword;
@@ -41,7 +52,7 @@ module.exports.list = async (req, res) => {
   // Hết tìm kiếm
 
   // Phân trang
-  const limitItems = 3;
+  const limitItems = 4;
   let page = 1;
   if (req.query.page && parseInt(req.query.page) > 0) {
     page = parseInt(req.query.page);
@@ -56,9 +67,12 @@ module.exports.list = async (req, res) => {
   };
   // Hết phân trang
 
-  const orderList = await Order.find(find).sort({
-    createdAt: "desc",
-  });
+  const orderList = await Order.find(find)
+    .sort({
+      createdAt: "desc",
+    })
+    .limit(limitItems)
+    .skip(skip);
 
   for (const orderDetail of orderList) {
     orderDetail.paymentMethodName = paymentMethodList.find(
@@ -93,6 +107,8 @@ module.exports.list = async (req, res) => {
     pageTitle: "Quản lý đơn hàng",
     orderList: orderList,
     pagination: pagination,
+    paymentMethodList: paymentMethodList,
+    paymentStatusList: paymentStatusList,
   });
 };
 
@@ -162,7 +178,7 @@ module.exports.editPatch = async (req, res) => {
 
 module.exports.destroyDelete = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = rethànhq.params.id;
 
     await Order.deleteOne({
       _id: id,

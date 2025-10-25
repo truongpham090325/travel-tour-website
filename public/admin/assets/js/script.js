@@ -1238,6 +1238,52 @@ if (filterStatus) {
 }
 // End filter status
 
+// Filter paymentMethod
+const filterPaymentMethod = document.querySelector("[filter-paymentMethod]");
+if (filterPaymentMethod) {
+  const url = new URL(window.location.href);
+
+  filterPaymentMethod.addEventListener("change", () => {
+    const value = filterPaymentMethod.value;
+    if (value) {
+      url.searchParams.set("paymentMethod", value);
+    } else {
+      url.searchParams.delete("paymentMethod");
+    }
+    window.location.href = url.href;
+  });
+
+  // Hiển thị lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("paymentMethod");
+  if (valueCurrent) {
+    filterStatus.value = valueCurrent;
+  }
+}
+// End Filter paymentMethod
+
+// Filter paymentStatus
+const filterPaymentStatus = document.querySelector("[filter-paymentStatus]");
+if (filterPaymentStatus) {
+  const url = new URL(window.location.href);
+
+  filterPaymentStatus.addEventListener("change", () => {
+    const value = filterPaymentStatus.value;
+    if (value) {
+      url.searchParams.set("paymentStatus", value);
+    } else {
+      url.searchParams.delete("paymentStatus");
+    }
+    window.location.href = url.href;
+  });
+
+  // Hiển thị lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("paymentStatus");
+  if (valueCurrent) {
+    filterStatus.value = valueCurrent;
+  }
+}
+// End Filter paymentStatus
+
 // Filter created by
 const filterCreatedBy = document.querySelector("[filter-created-by]");
 if (filterCreatedBy) {
