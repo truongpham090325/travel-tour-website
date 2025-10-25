@@ -144,10 +144,9 @@ if (listFilepondImageMulti.length > 0) {
 // End Filepond Image Multi
 
 // Biểu đồ doanh thu
-const revenueChart = document.querySelector("#revenue-chart");
-if (revenueChart) {
+const drawChart = (dataFilter) => {
   // Lấy ra ngày hiện tại
-  const now = new Date();
+  const now = dataFilter;
 
   // Lấy ra thông tin tháng này
   const currentMonth = now.getMonth() + 1;
@@ -192,7 +191,11 @@ if (revenueChart) {
     .then((res) => res.json())
     .then((data) => {
       if (data.code == "success") {
-        new Chart(revenueChart, {
+        const stringCanvas = `<canvas></canvas>`;
+        const parentChart = document.querySelector(".section-2 .inner-chart");
+        parentChart.innerHTML = stringCanvas;
+        const canvas = parentChart.querySelector("canvas");
+        new Chart(canvas, {
           type: "line",
           data: {
             labels: arrayDay,
@@ -236,6 +239,20 @@ if (revenueChart) {
         });
       }
     });
+};
+const revenueChart = document.querySelector("#revenue-chart");
+if (revenueChart) {
+  const now = new Date();
+  drawChart(now);
+
+  const inputFilterMonth = document.querySelector("[filter-month]");
+  if (inputFilterMonth) {
+    inputFilterMonth.addEventListener("change", () => {
+      const value = inputFilterMonth.value;
+      const dataFilter = new Date(value);
+      drawChart(dataFilter);
+    });
+  }
 }
 // Hết Biểu đồ doanh thu
 
